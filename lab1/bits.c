@@ -170,11 +170,12 @@ int fitsBits(int x, int n) {
   //
   // First, determine whether this number if negative or not.
   // Next, minus n by 1. If n is 3, we will rightshift by 2.
-  // 
-  int negative = !!((1 << 31) & x);
-  n += ~1+1;
+  int msb = 1 << 31;
+  int nonNegative = !(msb & x);
+  int negative = !nonNegative;
+  n += msb >> 31;
   x >>= n;
-  return (!negative & !x) | (negative & !~x);
+  return (nonNegative & !x) | (negative & !~x);
 }
 /* 
  * sign - return 1 if positive, 0 if zero, and -1 if negative
