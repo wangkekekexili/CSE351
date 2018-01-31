@@ -164,7 +164,17 @@ int thirdBits(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-  return 2;
+  // If x is 0, it alwasy fits.
+  // If x is positive, 1 to (32-n+1) bits need to be 0 to fit.
+  // If x is negative, 1 to (32-n+1) bits need to be 1 to fit.
+  //
+  // First, determine whether this number if negative or not.
+  // Next, minus n by 1. If n is 3, we will rightshift by 2.
+  // 
+  int negative = !!((1 << 31) & x);
+  n += ~1+1;
+  x >>= n;
+  return (!negative & !x) | (negative & !~x);
 }
 /* 
  * sign - return 1 if positive, 0 if zero, and -1 if negative
@@ -175,8 +185,18 @@ int fitsBits(int x, int n) {
  *  Rating: 2
  */
 int sign(int x) {
-  return 2;
+  // Calculate whether the number if negative or not.
+  // This can be easily determined by the first significant bit.
+  // -1 will be assigned to negative if negative, 0 otherwise.
+  // nonNegative will be 1 if non-negative, 0 otherwise.
+  // Calculate whether there are remaining bits.
+  // 1 will be assigned to positive if positive, 0 otherwise.
+  int negative = ((1 << 31) & x) >> 31;
+  int nonNegative = !negative;
+  int positive = !!(nonNegative << 31 >> 31 & x);
+  return negative + positive;
 }
+
 /* 
  * getByte - Extract byte n from word x
  *   Bytes numbered from 0 (LSB) to 3 (MSB)
