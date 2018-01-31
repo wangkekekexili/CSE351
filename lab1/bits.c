@@ -120,7 +120,10 @@ NOTES:
  *   Rating: 1
  */
 int bitAnd(int x, int y) {
-  return 2;
+  // x&y
+  // = ~(~(x&y))
+  // = ~(~x|~y)
+  return ~(~x|~y);
 }
 /* 
  * bitXor - x^y using only ~ and & 
@@ -130,7 +133,11 @@ int bitAnd(int x, int y) {
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return 2;
+  // x^y
+  // = (~x&y)|(x&~y)
+  // = ~~((~x&y)|(x&~y))
+  // = ~(~(~x&y)&~(x&~y))
+  return ~(~(~x&y)&~(x&~y));
 }
 /* 
  * thirdBits - return word with every third bit (starting from the LSB) set to 1
@@ -140,7 +147,11 @@ int bitXor(int x, int y) {
  *   Rating: 1
  */
 int thirdBits(void) {
-  return 2;
+  // Create the number byte by bytes.
+  int x1 = 0x49;
+  int x2 = 0x92;
+  int x3 = 0x24;
+  return x1 + (x2<<8) + (x3<<16) + (x1<<24);
 }
 // Rating: 2
 /* 
