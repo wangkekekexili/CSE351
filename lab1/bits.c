@@ -244,7 +244,17 @@ int logicalShift(int x, int n) {
  *   Rating: 3
  */
 int addOK(int x, int y) {
-  return 2;
+	// If x and y has different sign, sum won't overflow.
+	// Otherwise, if sum has the same sign as x, it won't overflow.
+	int msb = 1 << 31;
+	int xMsb = x & msb;
+	int yMsb = y & msb;
+	int sum = x + y;
+	int sumMsb = sum & msb;
+
+	int isXYSignDifferent = xMsb ^ yMsb;
+  int isXSumSignSame = !(xMsb ^ sumMsb);
+	return !!(isXYSignDifferent | isXSumSignSame);
 }
 // Rating: 4
 /* 
