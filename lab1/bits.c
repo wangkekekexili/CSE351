@@ -207,7 +207,11 @@ int sign(int x) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
-  return 2;
+  // Move the target byte to the MSB first.
+  // Then right shift 24 bits so the LSB contains the target byte.
+  // Since other bits may contain 1, do a &0xFF to only get the LSB.
+  int left = (4 + ~n) << 3;
+  return (x << left >> 24) & 0xFF; 
 }
 // Rating: 3
 /* 
@@ -219,7 +223,17 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-  return 2;
+  // First get arithmetic shift number. 
+  // This number is not the logical shift if the original number is
+  // negative.
+  // So a mask needs be & to eliminate the leading 1s. There are n
+  // number of these 1s.
+  // Note that if n is 0, no mask is needed. So first use !!n to 
+  // determine if mask is needed. !!n is 0 if n is 0, 1 otherwise.
+  int arithShift = x >> n;
+  int needMask = !!n;
+  n += ~1+1;
+  return arithShift & ~(needMask << 31 >> n);
 }
 /* 
  * addOK - Determine if can compute x+y without overflow
